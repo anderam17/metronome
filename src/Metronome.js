@@ -19,7 +19,26 @@ function Metronome() {
   let click2 = new Audio(sclick2);
 
   const startStop = () => {
-      click1.play();
+      
+      if (metronomeState.playing) {
+          clearInterval(this.timer);
+          setMetronomeState({...metronomeState, playing: false});
+      }else{
+          let timer = setInterval(playClick, (60 / metronomeState.bpm) * 1000);
+          setMetronomeState({...metronomeState, count: 0, playing: true}, playClick)
+      }
+  }
+
+  const playClick = () => {
+    const { count, beatsPerMeasure } = metronomeState;
+
+    if (count % beatsPerMeasure === 0){
+        click2.play();
+    }else {
+        click1.play();
+    }
+
+    setMetronomeState({...metronomeState, count: (metronomeState.count + 1) % metronomeState.beatsPerMeasure})
   }
 
   return (
